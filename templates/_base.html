@@ -1,0 +1,204 @@
+{% load static %}
+{% load movie_tags %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!-- //Meta tag Keywords -->
+    <title>{% block title %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <!-- //Meta tag Keywords -->
+    <!-- Custom-Files -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <!-- Bootstrap-Core-CSS -->
+    <!--/ Style-CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" media="all">
+    <!--// Style-CSS -->
+    <!-- font-awesome-icons -->
+    <link href="{% static 'css/font-awesome.css' %}" rel="stylesheet">
+    <!-- //font-awesome-icons -->
+    <!-- /Fonts -->
+    <link href="//fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700" rel="stylesheet">
+    <link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:200,200i,300,300i,400,400i,600,600i,700,700i,900"
+          rel="stylesheet">
+    <!-- //Fonts -->
+</head>
+
+<body>
+
+<div id="page" class="page"><!-- mian-content -->
+    <div class="main-banner bg bg1" id="home"
+         style="background-color: rgba(0, 0, 0, 0); margin-top: 0; background-image: url('../static/single-post-pic.jpg');">
+        <!-- header -->
+        <header class="header">
+            <div class="container-fluid px-lg-5">
+                <!-- nav -->
+                <nav class="py-4">
+                    <div id="logo">
+                        <h1><a href="{% url 'movies:index' %}" class="editContent"
+                               style="outline: none; outline-offset: -2px; cursor: pointer; color: rgb(255, 255, 255); font-size: 40px; background-color: rgba(0, 0, 0, 0); ">DjangoMovie</a>
+                        </h1>
+                    </div>
+
+                    <label for="drop" class="toggle">Menu</label>
+                    <input type="checkbox" id="drop">
+                    <ul class="menu mt-2">
+                        <li class="active"><a href="{% url 'movies:index' %}">Главная</a></li>
+                        {% if request.user.is_authenticated %}
+                        <li>
+                            <h5>Добро пожаловать, {{ user.username }}</h5>
+                        </li>
+                        {% else %}
+                        <li><a href="{% url 'account_login' %}"
+                               style="color: rgb(255, 255, 255); font-weight: 700; text-transform: uppercase;">Вход</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                <!-- //nav -->
+            </div>
+        </header>
+        <!-- //header -->
+
+    </div>
+    <!--//main-content-->
+    <!---->
+    <ol class="breadcrumb editContent">
+        <li class="breadcrumb-item">
+            <a href="{% url 'movies:index' %}" class="editContent">На главную</a>
+        </li>
+    </ol>
+    <!---->
+    <!-- banner -->
+    <section class="ab-info-main py-md-5 py-4 editContent" style="padding-left: 3rem; padding-right: 3rem;">
+        <div class="container-fluid py-md-3">
+            <div class="row">
+                <div class="side-bar col-lg-3">
+                    {% include 'movies/includes/search_widget.html' %}
+                    {% block filter_widget %}
+                    {% endblock %}
+                    {% get_latest_movies count=5 %}
+                </div>
+                <!-- //product left -->
+                <!-- product right -->
+                <div class="left-ads-display col-lg-9">
+                    <div class="row">
+                        {% block content %}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- //contact -->
+    <!-- footer -->
+    <footer class="editContent">
+        <div class="container">
+            <div class="row footer-top">
+                <div class="col-lg-4 footer-grid_section_w3layouts">
+                    <h4 class="sub-con-fo ad-info my-4 editContent">Catch on Social</h4>
+                    <ul class="w3layouts_social_list media-soc list-unstyled">
+                        <li>
+                            <a href="#" class="w3pvt_facebook editContent">
+                                <span class="fa fa-facebook-f"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="w3pvt_twitter editContent">
+                                <span class="fa fa-twitter"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="w3pvt_dribble editContent">
+                                <span class="fa fa-dribbble"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="w3pvt_google editContent">
+                                <span class="fa fa-google-plus"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-8 footer-right">
+                    <div class="w3layouts-news-letter">
+                        <h3 class="footer-title text-uppercase editContent mb-lg-4 mb-3">Newsletter</h3>
+
+                        <p class="editContent">By subscribing to our mailing list you will always get latest news and
+                            updates from us.</p>
+                        <form action="#" method="post" class="w3layouts-newsletter">
+                            <input type="email" name="Email" class="editContent" placeholder="Enter your email..."
+                                   required="">
+                            <button class="btn1 btn"><span class="fa fa-paper-plane-o" aria-hidden="true"></span>
+                            </button>
+
+                        </form>
+                    </div>
+                    <div class="row mt-lg-4 bottom-w3layouts-sec-nav mx-0">
+                        <div class="col-md-4 footer-grid_section_w3layouts">
+                            <h3 class="footer-title text-uppercase editContent mb-lg-4 mb-3">Разделы</h3>
+                            <ul class="list-unstyled w3layouts-icons">
+                                <li>
+                                    <a href="index.html" class="editContent">Главная</a>
+                                </li>
+                                <li>
+                                    <a href="about.html" class="editContent">Категории</a>
+                                </li>
+                                <li>
+                                    <a href="contact.html" class="editContent">Контакты</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4 footer-grid_section_w3layouts">
+                            <!-- social icons -->
+                            <div class="agileinfo_social_icons">
+                                <h3 class="footer-title text-uppercase editContent mb-lg-4 mb-3">Pages</h3>
+                                <ul class="list-unstyled w3layouts-icons">
+
+                                    <li>
+                                        <a href="#" class="editContent">About Us</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="editContent">About Us</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="editContent">About Us</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="editContent">About Us</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="editContent">About Us</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- social icons -->
+                        </div>
+                        <div class="col-md-4 footer-grid_section_w3layouts my-md-0 my-5">
+                            <h3 class="footer-title text-uppercase text-wh mb-lg-4 mb-3 editContent">Contact Info</h3>
+                            <div class="contact-info">
+                                <div class="footer-address-inf my-4">
+                                    <h4 class="ad-info mb-2 editContent">Email </h4>
+                                    <p class="editContent"><a href="mailto:info@example.com">info@example.com</a></p>
+                                </div>
+                                <div class="footer-address-inf">
+                                    <h4 class="ad-info mb-2 editContent">Location</h4>
+                                    <p class="editContent">New York City</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+{% block script %}
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,255 @@
+{% extends '_base.html' %}
+{% load thumbnail %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% load mptt_tags %}
+
+{% block title %} {{ movie.title }} {% endblock %}
+
+{% block content %}
+    <div class="left-ads-display col-lg-8">
+        <div class="row">
+            <div class="desc1-left col-md-6">
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <img src="{% thumbnail movie.thumbnail 348x481 crop %}" class="img-fluid" alt="">
+            </div>
+            <div class="desc1-right col-md-6 pl-lg-4">
+                <h3 class="editContent" style="outline: none; cursor: inherit;">
+                    {{ movie.title|upper }}</h3>
+                <h5 class="editContent">{{ movie.title }}</h5>
+                <ul>
+                    <li style="list-style: none"><span><b>Год:</b> {{ movie.year }}</span></li>
+                    <li style="list-style: none"><span><b>Страна:</b> {{ movie.country }}</span>
+                    </li>
+                    <li style="list-style: none"><span><b>Слоган:</b> «{{ movie.tagline }}»</span>
+                    </li>
+                    <li style="list-style: none">
+                        <span><b>Режиссер:</b>
+                            {% for director in movie.directors.all %}
+                                 <a href="{{ director.get_absolute_url }}">{{ director.name }}</a>
+                            {% endfor %}
+                        </span></li>
+                    <li style="list-style: none"><span><b>Актеры:</b>
+                        {% for actor in movie.actors.all %}
+                            <a href="{{ actor.get_absolute_url }}">{{ actor.name }}</a>
+                            {% if forloop.last %}. {% else %} , {% endif %}
+                        {% endfor %}
+                    </span></li>
+                    <li style="list-style: none"><span><b>Сценарий:</b>
+                        {% for scenarist in movie.scenarists.all %}
+                            <a href="{{ scenarist.get_absolute_url }}">{{ scenarist.name }}</a>
+                            {% if forloop.last %}. {% else %} , {% endif %}
+                        {% endfor %}
+                    </span></li>
+                    <li style="list-style: none"><span><b>Продюсер:</b>
+                        {% for producer in movie.producers.all %}
+                            <a href="{{ producer.get_absolute_url }}">{{ producer.name }}</a>
+                            {% if forloop.last %}. {% else %} , {% endif %}
+                        {% endfor %}
+                    </span></li>
+                    <li style="list-style: none"><span><b>Жанр:</b>
+                        {% for genre in movie.genres.all %}
+                            {{ genre.name }}
+                            {% if forloop.last %}. {% else %} , {% endif %}
+                        {% endfor %}
+                    </span>
+                    </li>
+                    <li style="list-style: none">
+                        <span><b>Бюджет:</b> {{ movie.budget }}</span></li>
+                    <li style="list-style: none">
+                        <span><b>Сборы в США:</b> ${{ movie.fees_in_usa }}</span></li>
+                    <li style="list-style: none"><span><b>Сборы в мире:</b> ${{ movie.fees_in_world }}</span>
+                    </li>
+                    <li style="list-style: none">
+                        <a href="#"><b>Рейтинг:</b>
+                            <span class="fa fa-star" aria-hidden="true"
+                                  style="outline: none; cursor: inherit;"></span>
+                            <span class="fa fa-star" aria-hidden="true"
+                                  style="outline: none; cursor: inherit;"></span>
+                            <span class="fa fa-star" aria-hidden="true"
+                                  style="outline: none; cursor: inherit;"></span>
+                            <span class="fa fa-star" aria-hidden="true"
+                                  style="outline: none; cursor: inherit;"></span>
+                            <span class="fa fa-star" aria-hidden="true"
+                                  style="outline: none; cursor: inherit;"></span>
+                            <span class="editContent"
+                                  style="outline: none; cursor: inherit;">5.0</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="share-desc">
+                    <div class="share">
+                        <h4 class="editContent"
+                            style="outline: none; cursor: inherit;">
+                            Share:</h4>
+                        <ul class="w3layouts_social_list list-unstyled">
+                            <li>
+                                <a href="#" class="w3pvt_facebook editContent"
+                                   style="outline: none; cursor: inherit;">
+                                                <span class="fa fa-facebook-f"
+                                                      style="outline: none; cursor: inherit;"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="w3pvt_twitter editContent"
+                                   style="outline: none; cursor: inherit;">
+                                                <span class="fa fa-twitter"
+                                                      style="outline: none; cursor: inherit;"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="w3pvt_dribble editContent"
+                                   style="outline: none; cursor: inherit;">
+                                                <span class="fa fa-dribbble"
+                                                      style="outline: none; cursor: inherit;"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row sub-para-w3layouts mt-5">
+
+            <h3 class="shop-sing editContent" style="outline: none; cursor: inherit;">
+                О фильме {{ movie.title }}</h3>
+            <p>
+                {% for image in movie.movieshots_movie.all %}
+                    <img src="{% thumbnail image.image 250x250 crop %}" class="img-fluid" alt="">
+                {% endfor %}
+            </p>
+            <p class="editContent" style="outline: none; cursor: inherit;">{{ movie.description|safe }}</p>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- contact form grid -->
+                <div class="contact-single">
+                    <h3 class="editContent" style="outline: none; cursor: inherit;">
+                                    <span class="sub-tittle editContent"
+                                          style="outline: none; cursor: inherit;">02</span>Оставить отзыв</h3>
+                    {% if request.user.is_authenticated %}
+                        <form class="mt-4" method="post" id="formReview"
+                              action="{% url 'reviews:movie_review' movie.url %}">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button type="submit"
+                                    class="mt-3 btn btn-success btn-block py-3"
+                                    style="outline: none; cursor: inherit; width: 200px">Отправить
+                            </button>
+                        </form>
+                    {% else %}
+                        <h2><a href="{% url 'account_login' %}">Login</a></h2>
+                    {% endif %}
+                </div>
+                <!--  //contact form grid ends here -->
+            </div>
+            <div class="row">
+                <div class="container">
+                    <div class="col-md-12">
+                        {% recursetree reviews %}
+                            {% with comment=node %}
+                                <div class="{% if comment.reply_to %}
+                        offset-1 col-11
+                        {% else %}
+                        col-12
+                        {% endif %}"
+                                >
+                                    <hr>
+                                    <p>
+                                        <strong style="color: pink">
+                                            {{ comment.user }}
+                                        </strong>
+
+                                        {% if comment.reply_to %}
+                                            <i class="far fa-arrow-alt-circle-right"
+                                               style="color: cornflowerblue;"
+                                            ></i>
+                                            <strong style="color: pink">
+                                                ответил пользователю {{ comment.reply_to }}
+                                            </strong>
+                                        {% endif %}
+
+                                    </p>
+                                    <div>{{ comment.content|safe }}</div>
+
+                                    <div>
+                    <span style="color: gray">
+                        {{ comment.created|timesince }} назад
+                    </span>
+                                        <button type="button"
+                                                class="btn btn-light btn-sm text-muted"
+                                                onclick="load_modal('{{ movie.url }}', {{ comment.id }})"
+                                        >
+                                            Ответить
+                                        </button>
+                                    </div>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade"
+                                         id="comment_{{ comment.id }}"
+                                         tabindex="-1"
+                                         role="dialog"
+                                         aria-labelledby="CommentModalCenter"
+                                         aria-hidden="true"
+                                    >
+                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                            <div class="modal-content" style="height: 480px">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalCenterTitle">
+                                                        Ответить {{ comment.user }}：</h5>
+                                                </div>
+                                                <div class="modal-body" id="modal_body_{{ comment.id }}"></div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    {% if not comment.is_leaf_node %}
+                                        <div class="children">
+                                            {{ children }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+
+                            {% endwith %}
+                        {% endrecursetree %}
+                    </div>
+                </div>
+            </div>
+
+            {% block script %}
+
+                <script>
+                    function load_modal(movie_url, comment_id) {
+                        let modal_body = '#modal_body_' + comment_id;
+                        let modal_id = '#comment_' + comment_id;
+
+                        if ($(modal_body).children().length === 0) {
+                            let content = '<iframe src="/review/movie-comment/' +
+                                movie_url +
+                                '/' +
+                                comment_id +
+                                '"' +
+                                ' frameborder="0" style="width: 100%; height: 100%;" id="iframe_' +
+                                comment_id +
+                                '"></iframe>';
+                            $(modal_body).append(content);
+                        }
+
+                        $(modal_id).modal('show');
+                    }
+
+                </script>
+            {% endblock script %}
+        </div>
+    </div>
+{% endblock %}

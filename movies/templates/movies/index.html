@@ -1,0 +1,43 @@
+{% extends '_base.html' %}
+{% load thumbnail %}
+{% block title %}Главная{% endblock %}
+
+{% block filter_widget %}
+    {% include 'movies/includes/filter_widget.html' %}
+{% endblock %}
+
+{% block content %}
+    {% for movie in filter.qs %}
+        <div class="col-md-4 product-men">
+            <div class="product-shoe-info editContent text-center mt-lg-4">
+                <div class="men-thumb-item">
+                    <a href="{{ movie.get_absolute_url }}">
+                        <img src="{% thumbnail movie.thumbnail 300x427 crop %}" class="img-fluid" alt="">
+                    </a>
+                </div>
+                <div class="item-info-product">
+                    <h4 class="">
+                        <a href="{{ movie.get_absolute_url }}" class="editContent">{{ movie.title }}</a>
+                    </h4>
+
+                    <div class="product_price">
+                        <div class="grid-price">
+                            <span class="money editContent">{{ movie.tagline }}</span>
+                        </div>
+                    </div>
+                    <ul class="stars">
+                        <li><a href="#"><span class="fa fa-star" aria-hidden="true"></span></a></li>
+                        <li><a href="#"><span class="fa fa-star" aria-hidden="true"></span></a></li>
+                        <li><a href="#"><span class="fa fa-star-half-o" aria-hidden="true"></span></a>
+                        </li>
+                        <li><a href="#"><span class="fa fa-star-half-o" aria-hidden="true"></span></a>
+                        </li>
+                        <li><a href="#"><span class="fa fa-star-o" aria-hidden="true"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <h2>Ничего нет</h2>
+    {% endfor %}
+{% endblock %}
