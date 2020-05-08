@@ -1,8 +1,8 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models import Avg
 from django.urls import reverse_lazy
-
-from reviews.models import Review
+from django.contrib.auth import get_user_model
 
 
 class Category(models.Model):
@@ -109,14 +109,6 @@ class MoviePerson(models.Model):
     def get_absolute_url(self):
         return reverse_lazy('movies:movie_person', kwargs={'pk': self.pk})
 
-    @property
-    def get_content_type(self):
-        return ContentType.objects.get_for_model(self.__class__)
-
-    @property
-    def reviews(self):
-        return Review.objects.filter_by_instance(self)
-
     class Meta:
         verbose_name = 'Участник кино'
         verbose_name_plural = 'Участники кино'
@@ -214,12 +206,8 @@ class Movie(models.Model):
         return reverse_lazy('movies:movie_detail', kwargs={'slug': self.url})
 
     @property
-    def reviews(self):
-        return Review.objects.filter_by_instance(self)
-
-    @property
-    def get_content_type(self):
-        return ContentType.objects.get_for_model(self.__class__)
+    def average_rating(self):
+        return Rating.objects.filter(movie=self).aggregate(avg=Avg('value'))
 
     class Meta:
         verbose_name = 'Фильм'
@@ -251,35 +239,33 @@ class MovieShots(models.Model):
         verbose_name_plural = 'Кадры из фильма'
 
 
-class RatingStar(models.Model):
-    value = models.SmallIntegerField(
-        'Значение',
-        default=0,
-    )
-
-    def __str__(self):
-        return self.value
-
-    class Meta:
-        verbose_name = 'Звезда рейтинга'
-        verbose_name_plural = 'Звёзды рейтинга'
-
-
 class Rating(models.Model):
-    ip = models.CharField(max_length=150)
-    star = models.ForeignKey(
-        RatingStar,
-        verbose_name='Звезда',
+    class Value(models.IntegerChoices):
+        EXCELLENT = 5
+        VERY_GOOD = 4
+        GOOD = 3
+        AVERAGE = 2
+        POOR = 1
+
+    value = models.PositiveSmallIntegerField(
+        choices=Value.choices,
+        default=Value.POOR,
+    )
+    user = models.ForeignKey(
+        get_user_model(),
         on_delete=models.CASCADE,
+        null=True,
+        blank=True
     )
     movie = models.ForeignKey(
         Movie,
         verbose_name='Фильм',
         on_delete=models.CASCADE,
+        related_name='rating',
     )
 
     def __str__(self):
-        return f"{self.movie.title} - {self.star}"
+        return f"{self.movie.title} - {self.value}"
 
     class Meta:
         verbose_name = 'Рейтинг'

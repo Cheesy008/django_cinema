@@ -25,7 +25,7 @@ SECRET_KEY = 'ysu=q)_0wmbz9)lb%pp&a=16xki88-!j0o_(cgq@o8!ds9oy@8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -42,17 +42,23 @@ INSTALLED_APPS = [
     'movies.apps.MoviesConfig',
     'reviews.apps.ReviewsConfig',
     'users.apps.UsersConfig',
+    'api.apps.ApiConfig',
 
     'easy_thumbnails',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
     'ckeditor',
     'ckeditor_uploader',
     'crispy_forms',
     'mptt',
     'django_filters',
     'silk',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'corsheaders',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'rest_auth.registration',
     'django_cleanup.apps.CleanupConfig',
 ]
 

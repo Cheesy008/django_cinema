@@ -24,6 +24,11 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('review/', include('reviews.urls', namespace='reviews')),
     path('silk/', include('silk.urls', namespace='silk')),
+    path('api/', include('api.urls', namespace='api')),
+    path('api-auth/', include('rest_framework.urls')),
+    path('api/profile/', include('rest_auth.urls')),
+    path('api/profile/registration/', include('rest_auth.registration.urls')),
+    path('api/profile/login/', include('rest_auth.registration.urls')),
     path('', include('movies.urls', namespace='movies')),
 ]
 

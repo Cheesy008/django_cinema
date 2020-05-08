@@ -14,9 +14,7 @@ def movie_review(request, slug, parent_comment_id=None):
         print(request.POST)
         if form.is_valid():
             new_review = form.save(commit=False)
-            new_review.content_type = form.cleaned_data.get('content_type')
-            new_review.object_id = form.cleaned_data.get('object_id')
-            new_review.content = form.cleaned_data.get('content')
+            new_review.movie = movie
             new_review.user = request.user
             if parent_comment_id:
                 parent_comment = Review.objects.get(id=parent_comment_id)
@@ -30,11 +28,7 @@ def movie_review(request, slug, parent_comment_id=None):
             messages.add_message(request, messages.WARNING, 'Форма заполнена неверно')
             return redirect(movie)
     else:
-        initial_data = {
-            'content_type': movie.get_content_type,
-            'object_id': movie.id,
-        }
-        form = ReviewForm(initial=initial_data)
+        form = ReviewForm()
         print(request.POST)
         context = {
             'form': form,

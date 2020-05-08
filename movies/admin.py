@@ -1,12 +1,10 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
-from django.contrib.contenttypes.admin import GenericTabularInline
 from django import forms
 
 from .models import (
     Movie,
-    RatingStar,
     Rating,
     Category,
     Genre,
@@ -16,7 +14,7 @@ from .models import (
 from reviews.models import Review
 
 
-class ReviewInline(GenericTabularInline):
+class ReviewInline(admin.TabularInline):
     model = Review
     extra = 1
 
@@ -51,7 +49,6 @@ class MovieAdmin(admin.ModelAdmin):
     inlines = [ReviewInline, MovieShotsInline]
 
 
-admin.site.register(RatingStar)
 admin.site.register(Rating)
 admin.site.register(Category)
 admin.site.register(Genre)

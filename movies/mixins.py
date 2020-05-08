@@ -14,15 +14,10 @@ class ObjectDetailMixin(object):
         else:
             return get_object_or_404(self.model, pk=self.kwargs.get(self.lookup))
 
-    def get_initial(self):
-        initial = super().get_initial()
-        initial['content_type'] = self.get_object().get_content_type
-        initial['object_id'] = self.get_object().id
-        return initial
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = self.get_form()
-        context['reviews'] = self.get_object().reviews
         return context
+
+
 

@@ -1,23 +1,20 @@
-from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 
 from users.models import Profile
-
-
-class ReviewManager(models.Manager):
-    def filter_by_instance(self, instance):
-        content_type = ContentType.objects.get_for_model(instance.__class__)
-        obj_id = instance.id
-        return super(ReviewManager, self).filter(
-            content_type=content_type,
-            object_id=obj_id
-        )
+from movies.models import Movie
 
 
 class Review(MPTTModel):
+    movie = models.ForeignKey(
+        Movie,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        null=True,
+        blank=True,
+    )
     parent = TreeForeignKey(
         'self',
         on_delete=models.SET_NULL,
@@ -40,12 +37,6 @@ class Review(MPTTModel):
     )
     content = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
-
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
-
-    objects = ReviewManager()
 
     def __str__(self):
         return f"{self.user.get_username}"

@@ -8,12 +8,8 @@ class ReviewForm(forms.ModelForm):
         model = Review
         fields = (
             'content',
-            'content_type',
-            'object_id'
         )
         widgets = {
-            'content_type': forms.HiddenInput(),
-            'object_id': forms.HiddenInput(),
             'content': forms.Textarea(
                 attrs={'style': 'width:500px'}
             ),

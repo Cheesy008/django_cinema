@@ -32,7 +32,7 @@
                     <li style="list-style: none">
                         <span><b>Режиссер:</b>
                             {% for director in movie.directors.all %}
-                                 <a href="{{ director.get_absolute_url }}">{{ director.name }}</a>
+                                <a href="{{ director.get_absolute_url }}">{{ director.name }}</a>
                             {% endfor %}
                         </span></li>
                     <li style="list-style: none"><span><b>Актеры:</b>
@@ -67,20 +67,23 @@
                     <li style="list-style: none"><span><b>Сборы в мире:</b> ${{ movie.fees_in_world }}</span>
                     </li>
                     <li style="list-style: none">
-                        <a href="#"><b>Рейтинг:</b>
-                            <span class="fa fa-star" aria-hidden="true"
-                                  style="outline: none; cursor: inherit;"></span>
-                            <span class="fa fa-star" aria-hidden="true"
-                                  style="outline: none; cursor: inherit;"></span>
-                            <span class="fa fa-star" aria-hidden="true"
-                                  style="outline: none; cursor: inherit;"></span>
-                            <span class="fa fa-star" aria-hidden="true"
-                                  style="outline: none; cursor: inherit;"></span>
-                            <span class="fa fa-star" aria-hidden="true"
-                                  style="outline: none; cursor: inherit;"></span>
-                            <span class="editContent"
-                                  style="outline: none; cursor: inherit;">5.0</span>
-                        </a>
+                        <form action="{% url 'movies:add_rating' %}" method="post" name="rating">
+                            <h3>Рейтинг</h3>
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ movie.id }}" name="movie">
+                            <span class="rating">
+                                {% for v, _ in rating_form.value.field.choices %}
+                                    <input type="radio" name="value" id="id_value_{{ v }}" value="{{ v }}">
+                                    <label for="id_value_{{ v }}">{{ v }}</label>
+                                {% endfor %}
+                        </span>
+                            {% if your_rating.value and movie.average_rating %}
+                                <p>Ваша оценка: <span class="editContent">{{ your_rating.value }}</span></p>
+                                <p>Общая оценка: <span class="editContent">{{ movie.average_rating.avg }}</span></p>
+                            {% else %}
+                                <p>Здесь вы можете поставить свою оценку фильму</p>
+                            {% endif %}
+                        </form>
                     </li>
                 </ul>
                 <div class="share-desc">
@@ -248,6 +251,17 @@
                         $(modal_id).modal('show');
                     }
 
+
+                    const rating = document.querySelector('form[name=rating]')
+                    rating.addEventListener('change', function (e) {
+                        let data = new FormData(this);
+                        fetch(`${this.action}`, {
+                            method: 'POST',
+                            body: data,
+                        })
+                            .then(response => alert('Вы установили рейтинг'))
+                            .catch(error => alert('Ошибка'))
+                    })
                 </script>
             {% endblock script %}
         </div>
